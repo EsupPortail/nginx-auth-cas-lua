@@ -38,27 +38,32 @@ wget https://raw.githubusercontent.com/prigaux/nginx-auth-cas-lua/master/src/glo
 
 * configure `cas_uri` in /etc/nginx/lua/global_cas_conf.lua
 * configure various global stuff
+  ```
+  # needed for resty.http
+  resolver 8.8.8.8;
+  lua_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
 
-```
-# needed for resty.http
-resolver 8.8.8.8;
-lua_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
-
-lua_package_path '/etc/nginx/lua/?.lua;;';
-lua_shared_dict cas_store 10M;
-```
-
-* protect a location:
-
-```
-location /secured {
+  lua_package_path '/etc/nginx/lua/?.lua;;';
+  lua_shared_dict cas_store 10M;
+  ```
+* protect a location (REMOTE_USER is passed to proxy implicitly):
+  ```
+  location /secured {
     access_by_lua_block { require('cas').forceAuthentication() }
     proxy_pass ...;
     ...
-}
-```
-
-NB: `access_by_lua_block` must be *before* proxy_pass
+  }
+  ```
+  NB: `access_by_lua_block` must be *before* proxy_pass
+* or for FASTCGI protect a location and provide REMOTE_USER explicitly:
+  ```
+  location /secured {
+    access_by_lua_block { require('cas').forceAuthentication() }
+    fastcgi_pass ...;
+    fastcgi_param REMOTE_USER $http_remote_user;
+    ...
+  }
+  ```
 
 
 # Known limitations
