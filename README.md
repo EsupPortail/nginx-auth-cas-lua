@@ -48,7 +48,7 @@ lua_package_path '/etc/nginx/lua/?.lua;;';
 lua_shared_dict cas_store 10M;
 ```
 
-* protect a location:
+* protect a location (REMOTE_USER is passed to proxy implicitly):
 
 ```
 location /secured {
@@ -59,6 +59,16 @@ location /secured {
 ```
 
 NB: `access_by_lua_block` must be *before* proxy_pass
+
+* or for FASTCGI protect a location and provide REMOTE_USER explicitly:
+  ```
+  location /secured {
+    access_by_lua_block { require('cas').forceAuthentication() }
+    fastcgi_pass ...;
+    fastcgi_param REMOTE_USER $http_remote_user;
+    ...
+  }
+  ```
 
 
 # Known limitations
