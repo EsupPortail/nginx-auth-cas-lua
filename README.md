@@ -37,7 +37,7 @@ wget https://raw.githubusercontent.com/prigaux/nginx-auth-cas-lua/master/src/glo
 # Configuration
 
 * configure `cas_uri` in /etc/nginx/lua/global_cas_conf.lua
-* configure various global stuff
+* configure various global stuff in nginx config
 
 ```
 # needed for resty.http
