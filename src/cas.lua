@@ -40,6 +40,10 @@ local function _set_our_cookie(val)
    _set_cookie(cookie_name .. "=" .. val .. cookie_params)
 end
 
+local function first_access()
+   ngx.redirect(_cas_login(), ngx.HTTP_MOVED_TEMPORARILY)
+end
+
 local function with_sessionId(sessionId)
    -- does the cookie exist in our store?
    local user = store:get(sessionId);
@@ -55,10 +59,6 @@ local function with_sessionId(sessionId)
       -- export REMOTE_USER header to the application
       ngx.req.set_header("REMOTE_USER", user)
    end
-end
-
-local function first_access()
-   ngx.redirect(_cas_login(), ngx.HTTP_MOVED_TEMPORARILY)
 end
 
 local function _set_store_and_cookie(sessionId, user)  
