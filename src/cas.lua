@@ -61,6 +61,12 @@ local function with_sessionId(sessionId)
    end
 end
 
+local function username_with_sessionId(sessionId)
+   -- does the cookie exist in our store?
+   local user = store:get(sessionId);
+   return user;
+end
+
 local function _set_store_and_cookie(sessionId, user)  
    -- place cookie into cookie store
    local success, err, forcible = store:add(sessionId, user, session_lifetime)
@@ -111,6 +117,14 @@ local function validate_with_CAS(ticket)
    end
 end
 
+local function get_username()
+   local sessionId = _get_sessionId()
+   if sessionId ~= nil then
+      return username_with_sessionId(sessionId)
+   end
+   return nil
+end
+
 local function forceAuthentication()
    local sessionId = _get_sessionId()
    if sessionId ~= nil then
@@ -137,5 +151,6 @@ end
 
 return {
    forceAuthentication = forceAuthentication;   
+   get_username = get_username;
    logout = logout;
 }
