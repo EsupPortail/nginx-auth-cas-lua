@@ -58,6 +58,8 @@ local function with_sessionId(sessionId)
       
       -- export REMOTE_USER header to the application
       ngx.req.set_header("REMOTE_USER", user)
+      
+      return user
    end
 end
 
