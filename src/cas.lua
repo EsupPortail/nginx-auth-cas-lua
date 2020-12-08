@@ -4,6 +4,7 @@ local conf = require(ngx.var.cas_conf or "global_cas_conf")
 local cas_uri = conf.cas_uri
 local cookie_name = conf.cookie_name or "NGXCAS"
 local cookie_params = conf.cookie_params or "; Path=/; Secure; HttpOnly"
+local REMOTE_USER_header = conf.REMOTE_USER_header or "REMOTE_USER"
 local session_lifetime = conf.session_lifetime or 3600
 local store = ngx.shared[conf.store_name or "cas_store"]
 
@@ -57,9 +58,9 @@ local function with_sessionId(sessionId)
       store:set(sessionId, user, session_lifetime)
       
       -- export REMOTE_USER header to the application
-      ngx.req.set_header("REMOTE_USER", user)
-      
-      return user
+      if REMOTE_USER_header ~= "" then
+         ngx.req.set_header(REMOTE_USER_header, user)
+      end
    end
 end
 
