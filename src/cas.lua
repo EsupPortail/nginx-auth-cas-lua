@@ -1,13 +1,22 @@
 local http = require('resty.http')
 
-local conf = require(ngx.var.cas_conf or "global_cas_conf")
-local cas_uri = conf.cas_uri
-local cookie_name = conf.cookie_name or "NGXCAS"
-local cookie_params = conf.cookie_params or "; Path=/; Secure; HttpOnly"
-local REMOTE_USER_header = conf.REMOTE_USER_header or "REMOTE_USER"
-local session_lifetime = conf.session_lifetime or 3600
-local store = ngx.shared[conf.store_name or "cas_store"]
+local conf = nil
+local cas_uri = nil
+local cookie_name = nil
+local cookie_params = nil
+local REMOTE_USER_header = nil
+local session_lifetime = nil
+local store = nil
 
+local function init()
+   conf = require(ngx.var.cas_conf or "global_cas_conf")
+   cas_uri = conf.cas_uri
+   cookie_name = conf.cookie_name or "NGXCAS"
+   cookie_params = conf.cookie_params or "; Path=/; Secure; HttpOnly"
+   REMOTE_USER_header = conf.REMOTE_USER_header or "REMOTE_USER"
+   session_lifetime = conf.session_lifetime or 3600
+   store = ngx.shared[conf.store_name or "cas_store"]
+end
 
 local function _to_table(v)
    if v == nil then
@@ -115,6 +124,7 @@ local function validate_with_CAS(ticket)
 end
 
 local function forceAuthentication()
+   init()
    local sessionId = _get_sessionId()
    if sessionId ~= nil then
       return with_sessionId(sessionId)
