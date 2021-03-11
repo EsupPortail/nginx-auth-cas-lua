@@ -109,6 +109,7 @@ local function _validate(ticket)
       end
    else
       ngx.log(ngx.ERR, err)
+      ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
    end
    return nil
 end
