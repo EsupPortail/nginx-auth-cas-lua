@@ -15,7 +15,12 @@ local function init()
    cookie_params = conf.cookie_params or "; Path=/; Secure; HttpOnly"
    REMOTE_USER_header = conf.REMOTE_USER_header or "REMOTE_USER"
    session_lifetime = conf.session_lifetime or 3600
-   store = ngx.shared[conf.store_name or "cas_store"]
+   local store_name = conf.store_name or "cas_store"
+   store = ngx.shared[store_name]
+   if store == nil then
+    ngx.log(ngx.ERR, 'you must configure "lua_shared_dict ' .. store_name .. '"')
+    ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
+   end
 end
 
 local function _to_table(v)
