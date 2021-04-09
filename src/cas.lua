@@ -75,6 +75,7 @@ local function with_sessionId(sessionId)
       if REMOTE_USER_header ~= "" then
          ngx.req.set_header(REMOTE_USER_header, user)
       end
+      return user
    end
 end
 
