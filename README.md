@@ -23,6 +23,7 @@ or
 mkdir -p /etc/nginx/lua/resty
 cd /etc/nginx/lua/resty/
 wget https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http_headers.lua
+wget https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http_connect.lua
 wget https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http.lua
 ```
 
